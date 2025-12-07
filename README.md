@@ -8,6 +8,7 @@ A Bun-based web application that replicates your n8n workflow for uploading bill
 - 🎨 **Beautiful UI**: Modern, responsive form with drag-and-drop support
 - 🚀 **Fast**: Built with Bun for optimal performance
 - 🐳 **Docker Ready**: Containerized for easy deployment
+- ☁️ **Cloudflare Tunnel**: Optional secure tunnel for public access
 - 🔄 **Notion Integration**: Seamlessly uploads images to your Notion page
 
 ## Workflow
@@ -42,7 +43,18 @@ This app replicates the following n8n workflow:
 3. Click "Invite" and add your integration
 4. The page ID is in the URL: `https://notion.so/workspace/PAGE_ID`
 
-### 3. Configure Environment Variables
+### 3. Set Up Cloudflare Tunnel
+
+To make your app publicly accessible without opening ports:
+
+1. Go to [Cloudflare Zero Trust](https://one.dash.cloudflare.com/)
+2. Navigate to "Networks" > "Tunnels"
+3. Click "Create a tunnel"
+4. Choose "Cloudflared" and give it a name
+5. Copy the tunnel token
+6. Configure the tunnel to point to `http://billsup:3000`
+
+### 4. Configure Environment Variables
 
 Create a `.env` file from the example:
 
@@ -57,6 +69,7 @@ NOTION_API_KEY=secret_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 NOTION_PAGE_ID=
 PORT=3000
 NODE_ENV=production
+CLOUDFLARED_TUNNEL_TOKEN=
 ```
 
 ## Local Development
@@ -91,8 +104,8 @@ docker-compose up -d
 
 This will:
 - Build the Docker image
-- Start the container
-- Expose the app on port 3000
+- Start the billsup container
+- Start the cloudflared tunnel
 - Enable health checks
 - Auto-restart on failure
 
@@ -124,7 +137,6 @@ docker run -d \
   -e NODE_ENV=production \
   --name notion-bill-uploader \
   notion-bill-uploader
-```
 
 ## Usage
 
@@ -196,6 +208,7 @@ Health check endpoint for monitoring
 | `NOTION_PAGE_ID` | No | - | Target Notion page ID |
 | `PORT` | No | `3000` | Server port |
 | `NODE_ENV` | No | `development` | Environment mode (set to `production` for production) |
+| `CLOUDFLARED_TUNNEL_TOKEN` | No | - | Cloudflare Tunnel token for secure public access |
 
 ## Troubleshooting
 
