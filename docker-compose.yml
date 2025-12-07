@@ -1,8 +1,6 @@
 services:
   billsup:
     build: .
-    ports:
-      - "3000:3000"
     environment:
       - NOTION_API_KEY=${NOTION_API_KEY}
       - NOTION_PAGE_ID=${NOTION_PAGE_ID}
