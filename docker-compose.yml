@@ -15,3 +15,12 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    command: tunnel --metrics 0.0.0.0:20241 --no-autoupdate run
+    environment:
+     - TUNNEL_TOKEN=${CLOUDFLARED_TUNNEL_TOKEN}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "cloudflared", "tunnel", "--metrics", "127.0.0.1:20241", "ready"]
