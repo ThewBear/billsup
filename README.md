@@ -1,15 +1,15 @@
 # Notion Bill Uploader
 
-A Bun-based web application that replicates your n8n workflow for uploading bill images to Notion. This app provides a clean web form interface for uploading multiple images directly to a Notion page.
+A Bun-based web application that replicates your n8n workflow for uploading bill images or PDFs to Notion. This app provides a clean web form interface for uploading multiple images or PDFs directly to a Notion page.
 
 ## Features
 
-- 📄 **Multi-file Upload**: Upload multiple bill images at once
+- 📄 **Multi-file Upload**: Upload multiple bill images or PDFs at once
 - 🎨 **Beautiful UI**: Modern, responsive form with drag-and-drop support
 - 🚀 **Fast**: Built with Bun for optimal performance
 - 🐳 **Docker Ready**: Containerized for easy deployment
 - ☁️ **Cloudflare Tunnel**: Optional secure tunnel for public access
-- 🔄 **Notion Integration**: Seamlessly uploads images to your Notion page
+- 🔄 **Notion Integration**: Seamlessly uploads images and PDFs to your Notion page
 
 ## Workflow
 
@@ -19,7 +19,7 @@ This app replicates the following n8n workflow:
 2. **Split Files**: Each file is processed individually
 3. **Create Upload Object**: Creates a Notion file upload object
 4. **Upload File**: Uploads file contents to Notion's storage
-5. **Add Image Block**: Adds image block to specified Notion page
+5. **Add File Block**: Adds an image or pdf block to specified Notion page
 
 ## Prerequisites
 
@@ -141,9 +141,9 @@ docker run -d \
 ## Usage
 
 1. Open your browser to `http://localhost:3000`
-2. Click the upload area or drag and drop bill images
+2. Click the upload area or drag and drop bill images or PDFs
 3. Click "Upload to Notion"
-4. Your images will be added to the specified Notion page
+4. Your images and PDFs will be added to the specified Notion page
 
 ## API Endpoints
 
@@ -168,6 +168,7 @@ Handles file uploads
     {
       "fileName": "bill1.jpg",
       "fileId": "abc123",
+      "blockType": "image",
       "success": true
     }
   ]
@@ -216,7 +217,7 @@ Health check endpoint for monitoring
 - Check that your `NOTION_API_KEY` is correct
 - Verify the integration has been added to the target page
 
-### "Failed to add image block"
+### "Failed to add image block" / "Failed to add pdf block"
 - Ensure `NOTION_PAGE_ID` is correct
 - Verify the integration has edit permissions on the page
 - Check that the page exists and is accessible

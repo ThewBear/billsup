@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-A single-file Bun + Hono web app ("Notion Bill Uploader") that replicates an n8n workflow: it serves an HTML upload form and forwards uploaded bill images to a Notion page as image blocks. Everything lives in `src/index.ts` — there is no build step, router split, or test suite.
+A single-file Bun + Hono web app ("Notion Bill Uploader") that replicates an n8n workflow: it serves an HTML upload form and forwards uploaded bill images or PDFs to a Notion page as image or pdf blocks. Everything lives in `src/index.ts` — there is no build step, router split, or test suite.
 
 ## Commands
 
@@ -37,7 +37,7 @@ Optional: `PORT` (default 3000), `NODE_ENV`, `CLOUDFLARED_TUNNEL_TOKEN` (only us
 - `POST /upload` — reads `multipart/form-data`, pulls all files from the `data` field, and runs each through `processFileUpload`, which performs the three-step Notion upload sequence:
   1. `createFileUploadObject()` — `POST /v1/file_uploads` to get an `upload_url` and object `id`.
   2. `uploadFileContents()` — `POST` the file as `FormData` to that `upload_url`.
-  3. `addImageBlockToPage()` — `PATCH /v1/blocks/{NOTION_PAGE_ID}/children` to append an image block referencing the uploaded file by `id`.
+  3. `addFileBlockToPage()` — `PATCH /v1/blocks/{NOTION_PAGE_ID}/children` to append an image or pdf block (chosen by `getBlockType()` based on the file's MIME type/extension) referencing the uploaded file by `id`.
   Each file is processed independently and sequentially (`for...of`, not `Promise.all`); a failure on one file doesn't stop the others, and the response reports per-file `success`/`error` plus aggregate `uploaded`/`failed` counts.
 - `GET /health` — verifies Notion connectivity by calling `/v1/users/me` with the configured token; used by the Docker healthcheck.
 

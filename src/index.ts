@@ -21,6 +21,13 @@ const notionHeaders = {
   'Notion-Version': '2022-06-28',
 };
 
+function getBlockType(file: File): 'image' | 'pdf' {
+  if (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')) {
+    return 'pdf';
+  }
+  return 'image';
+}
+
 /**
  * Step 1: Create a File Upload object in Notion
  */
@@ -60,14 +67,14 @@ async function uploadFileContents(uploadUrl: string, fileBlob: Blob, fileName: s
 }
 
 /**
- * Step 3: Add an image block to the Notion page
+ * Step 3: Add a file block (image or pdf) to the Notion page
  */
-async function addImageBlockToPage(fileId: string) {
+async function addFileBlockToPage(fileId: string, blockType: 'image' | 'pdf') {
   const body = {
     children: [
       {
-        type: 'image',
-        image: {
+        type: blockType,
+        [blockType]: {
           caption: [],
           type: 'file_upload',
           file_upload: {
@@ -92,7 +99,7 @@ async function addImageBlockToPage(fileId: string) {
 
   if (!response.ok) {
     const error = await response.text();
-    throw new Error(`Failed to add image block: ${error}`);
+    throw new Error(`Failed to add ${blockType} block: ${error}`);
   }
 
   return await response.json();
@@ -103,6 +110,8 @@ async function addImageBlockToPage(fileId: string) {
  */
 async function processFileUpload(file: File) {
   console.log(`Processing file: ${file.name}`);
+
+  const blockType = getBlockType(file);
 
   // Step 1: Create File Upload object
   const uploadObject = await createFileUploadObject();
@@ -116,13 +125,14 @@ async function processFileUpload(file: File) {
   );
   console.log(`Uploaded file: ${file.name}`);
 
-  // Step 3: Add image block to page
-  const blockResult = await addImageBlockToPage(uploadObject.id);
-  console.log(`Added image block for: ${file.name}`);
+  // Step 3: Add file block to page
+  const blockResult = await addFileBlockToPage(uploadObject.id, blockType);
+  console.log(`Added ${blockType} block for: ${file.name}`);
 
   return {
     fileName: file.name,
     fileId: uploadObject.id,
+    blockType,
     success: true,
   };
 }
@@ -300,7 +310,7 @@ app.get('/', (c) => {
 <body>
     <div class="container">
         <h1>📄 Upload Bills</h1>
-        <p class="subtitle">Select one or more bill images to upload to Notion</p>
+        <p class="subtitle">Select one or more bill images or PDFs to upload to Notion</p>
         
         <form id="uploadForm">
             <div class="form-group">
@@ -310,7 +320,7 @@ app.get('/', (c) => {
                         type="file" 
                         name="data" 
                         id="fileInput"
-                        accept="image/*"
+                        accept="image/*,application/pdf"
                         multiple 
                         required
                     >
