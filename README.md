@@ -31,17 +31,17 @@ This app replicates the following n8n workflow:
 
 ### 1. Create Notion Integration
 
-1. Go to [Notion Integrations](https://www.notion.so/my-integrations)
-2. Click "New integration"
-3. Give it a name (e.g., "Bill Uploader")
-4. Copy the "Internal Integration Token"
+1. Go to the [Notion Developer Portal](https://app.notion.com/developers/connections)
+2. Under "Build", select "Internal connections", then click "Create a new connection"
+3. Give it a name (e.g., "Bill Uploader") and select your workspace
+4. Open the "Configuration" tab and copy the "API token"
 
 ### 2. Get Notion Page ID
 
 1. Open the Notion page where you want to upload images
-2. Click "Share" in the top right
-3. Click "Invite" and add your integration
-4. The page ID is in the URL: `https://notion.so/workspace/PAGE_ID`
+2. Click the "•••" menu in the top right, then select "Connections"
+3. Click "Add connection", search for your integration, and confirm access
+4. The page ID is in the page URL: `https://notion.so/workspace/PAGE_ID`
 
 ### 3. Set Up Cloudflare Tunnel
 

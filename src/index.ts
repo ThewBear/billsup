@@ -18,7 +18,7 @@ if (!NOTION_PAGE_ID) {
 // Notion API headers
 const notionHeaders = {
   'Authorization': `Bearer ${NOTION_API_KEY}`,
-  'Notion-Version': '2022-06-28',
+  'Notion-Version': '2026-03-11',
 };
 
 function getBlockType(file: File): 'image' | 'pdf' {
